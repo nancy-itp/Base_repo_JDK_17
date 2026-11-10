@@ -22,6 +22,8 @@ nbactions.xml
 
 # Configuration files others than the one provided by default
 src/main/resources/*.properties
+# application-prod.properties holds no secrets (only ${ENV_VAR} references), so it is tracked
+!src/main/resources/application-prod.properties
 !src/main/resources/application.properties
 !src/main/resources/application-mailgun.empty.properties
 

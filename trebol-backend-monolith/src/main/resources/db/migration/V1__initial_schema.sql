@@ -1,13 +1,12 @@
--- Adminer 4.8.1 MySQL 5.5.5-10.5.9-MariaDB-1:10.5.9+maria~focal dump
-
-SET NAMES utf8;
-SET time_zone = '+00:00';
-SET foreign_key_checks = 0;
-SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+-- V1: initial Trebol schema for MariaDB.
+-- Converted from the original schema-mariadb.sql (Adminer dump), with these changes:
+--   * DROP TABLE statements removed (Flyway only ever runs this once on an empty database)
+--   * order_details.order_id foreign key now references `orders` (it pointed at a non-existent `sales` table)
+--   * AUTO_INCREMENT start values removed here; V2 sets them after inserting the seed rows
 
 SET NAMES utf8mb4;
+SET foreign_key_checks = 0;
 
-DROP TABLE IF EXISTS `addresses`;
 CREATE TABLE `addresses` (
   `address_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `address_city` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -23,8 +22,6 @@ CREATE TABLE `addresses` (
   KEY `IDX_ADDR_POSTAL_CODE` (`address_postal_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `app_params`;
 CREATE TABLE `app_params` (
   `param_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `param_category` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -32,30 +29,24 @@ CREATE TABLE `app_params` (
   `param_value` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`param_id`),
   UNIQUE KEY `UK_PARAM` (`param_category`,`param_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `app_permissions`;
 CREATE TABLE `app_permissions` (
   `permission_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `permission_code` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `permission_description` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`permission_id`),
   UNIQUE KEY `UK_PERM_CODE` (`permission_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `app_user_roles`;
 CREATE TABLE `app_user_roles` (
   `user_role_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_role_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`user_role_id`),
   UNIQUE KEY `UK_UROLE_NAME` (`user_role_name`),
   KEY `IDX_UROLE_NAME` (`user_role_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `billing_companies`;
 CREATE TABLE `billing_companies` (
   `billing_company_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `billing_company_id_number` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -65,17 +56,13 @@ CREATE TABLE `billing_companies` (
   UNIQUE KEY `UK_BILL_CY_NAME` (`billing_company_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `billing_types`;
 CREATE TABLE `billing_types` (
   `billing_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `billing_type_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`billing_type_id`),
   UNIQUE KEY `UK_BILL_TYP_NAME` (`billing_type_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `images`;
 CREATE TABLE `images` (
   `image_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `image_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -87,17 +74,13 @@ CREATE TABLE `images` (
   UNIQUE KEY `UK_IMG_URL` (`image_url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `payment_types`;
 CREATE TABLE `payment_types` (
   `payment_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `payment_type_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`payment_type_id`),
   UNIQUE KEY `UK_PAYMT_NAME` (`payment_type_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `people`;
 CREATE TABLE `people` (
   `person_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `person_email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -114,8 +97,6 @@ CREATE TABLE `people` (
   KEY `IDX_PERSON_EMAIL` (`person_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `product_lists`;
 CREATE TABLE `product_lists` (
   `product_list_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `product_list_code` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -126,8 +107,6 @@ CREATE TABLE `product_lists` (
   UNIQUE KEY `UK_PLIST_CODE` (`product_list_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `product_categories`;
 CREATE TABLE `product_categories` (
   `product_category_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `product_category_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -139,8 +118,6 @@ CREATE TABLE `product_categories` (
   CONSTRAINT `FK_PROD_CAT_PARENT` FOREIGN KEY (`parent_product_category_id`) REFERENCES `product_categories` (`product_category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `order_statuses`;
 CREATE TABLE `order_statuses` (
   `order_status_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_status_code` int(11) NOT NULL,
@@ -148,10 +125,8 @@ CREATE TABLE `order_statuses` (
   PRIMARY KEY (`order_status_id`),
   UNIQUE KEY `UK_ORDER_STATUS_CODE` (`order_status_code`),
   UNIQUE KEY `UK_ORDER_STATUS_NAME` (`order_status_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `shippers`;
 CREATE TABLE `shippers` (
   `shipper_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `shipper_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -159,12 +134,6 @@ CREATE TABLE `shippers` (
   UNIQUE KEY `UK_SHIPPER_NAME` (`shipper_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-
-
-
-
-DROP TABLE IF EXISTS `app_users`;
 CREATE TABLE `app_users` (
   `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -176,10 +145,8 @@ CREATE TABLE `app_users` (
   KEY `IDX_USER_NAME` (`user_name`),
   CONSTRAINT `FK_USER_PERSON_ID` FOREIGN KEY (`person_id`) REFERENCES `people` (`person_id`),
   CONSTRAINT `FK_USER_UROLE_ID` FOREIGN KEY (`user_role_id`) REFERENCES `app_user_roles` (`user_role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `app_user_role_permissions`;
 CREATE TABLE `app_user_role_permissions` (
   `user_role_permission_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `permission_id` bigint(20) NOT NULL,
@@ -187,10 +154,8 @@ CREATE TABLE `app_user_role_permissions` (
   PRIMARY KEY (`user_role_permission_id`),
   CONSTRAINT `FK_UROLEPERMS_PERM_ID` FOREIGN KEY (`permission_id`) REFERENCES `app_permissions` (`permission_id`),
   CONSTRAINT `FK_UROLEPERMS_UROLE_ID` FOREIGN KEY (`user_role_id`) REFERENCES `app_user_roles` (`user_role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `customers`;
 CREATE TABLE `customers` (
   `customer_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `person_id` bigint(20) NOT NULL,
@@ -199,8 +164,6 @@ CREATE TABLE `customers` (
   CONSTRAINT `FK_CUSTOM_PERSON_ID` FOREIGN KEY (`person_id`) REFERENCES `people` (`person_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
   `product_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `product_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -217,8 +180,6 @@ CREATE TABLE `products` (
   CONSTRAINT `FK_PRODUCT_CAT_ID` FOREIGN KEY (`product_category_id`) REFERENCES `product_categories` (`product_category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `salespeople`;
 CREATE TABLE `salespeople` (
   `salesperson_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `person_id` bigint(20) NOT NULL,
@@ -226,13 +187,6 @@ CREATE TABLE `salespeople` (
   CONSTRAINT `FK_SPERSON_PERSON_ID` FOREIGN KEY (`person_id`) REFERENCES `people` (`person_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-
-
-
-
-
-DROP TABLE IF EXISTS `product_images`;
 CREATE TABLE `product_images` (
   `product_image_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `image_id` bigint(20) NOT NULL,
@@ -242,8 +196,6 @@ CREATE TABLE `product_images` (
   CONSTRAINT `FK_PIMGS_PROD_ID` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `product_list_items`;
 CREATE TABLE `product_list_items` (
   `product_list_item_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `product_list_id` bigint(20) NOT NULL,
@@ -253,8 +205,6 @@ CREATE TABLE `product_list_items` (
   CONSTRAINT `FK_PLIST_ITEM_PROD_ID` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `order_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_date` datetime(6) NOT NULL,
@@ -287,8 +237,6 @@ CREATE TABLE `orders` (
   CONSTRAINT `FK_ORDER_SPERSON` FOREIGN KEY (`salesperson_id`) REFERENCES `salespeople` (`salesperson_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `order_details`;
 CREATE TABLE `order_details` (
   `order_detail_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_detail_unit_value` int(11) NOT NULL,
@@ -298,8 +246,7 @@ CREATE TABLE `order_details` (
   `order_id` bigint(20) NOT NULL,
   PRIMARY KEY (`order_detail_id`),
   CONSTRAINT `FK_ORDER_DETAIL_PROD_ID` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE SET NULL,
-  CONSTRAINT `FK_ORDER_DETAIL_PARENT_ID` FOREIGN KEY (`order_id`) REFERENCES `sales` (`order_id`)
+  CONSTRAINT `FK_ORDER_DETAIL_PARENT_ID` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
--- 2022-01-06 06:37:28
+SET foreign_key_checks = 1;

@@ -79,6 +79,11 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Health, liveness and readiness endpoints for the load balancer and ECS -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
 
     <!-- Persistence -->
     <dependency>
@@ -95,6 +100,15 @@
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
+    </dependency>
+    <!-- Versioned database migrations (versions managed by Spring Boot) -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-mysql</artifactId>
     </dependency>
     <dependency>
       <groupId>com.querydsl</groupId>
@@ -178,6 +192,22 @@
       <groupId>com.konghq</groupId>
       <artifactId>unirest-mocks</artifactId>
       <version>${unirest.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Integration tests against a real MariaDB in Docker (versions managed by Spring Boot) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mariadb</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
