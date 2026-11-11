@@ -45,6 +45,11 @@
     <!-- Dependencies -->
     <jjwt.version>0.11.5</jjwt.version>
     <unirest.version>3.13.8</unirest.version>
+    <!-- Newer than Spring Boot 3.2's default (1.19.x), which cannot talk to Docker Engine 29+ (Docker Desktop 4.5x) -->
+    <testcontainers.version>1.21.4</testcontainers.version>
+    <!-- Overridden by the skip-disabled-integration-tests profile below -->
+    <trebol.excludedTest.webpay>none</trebol.excludedTest.webpay>
+    <trebol.excludedTest.mailgun>none</trebol.excludedTest.mailgun>
 
     <!-- Plugins configuration -->
     <java.endorsed-api.dir>${project.build.directory}/endorsed</java.endorsed-api.dir>
@@ -79,6 +84,11 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
+    <!-- Health, liveness and readiness endpoints for the load balancer and ECS -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
 
     <!-- Persistence -->
     <dependency>
@@ -95,6 +105,15 @@
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
+    </dependency>
+    <!-- Versioned database migrations (versions managed by Spring Boot) -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-mysql</artifactId>
     </dependency>
     <dependency>
       <groupId>com.querydsl</groupId>
@@ -180,7 +199,38 @@
       <version>${unirest.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Integration tests against a real MariaDB in Docker (versions managed by Spring Boot) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mariadb</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>skip-disabled-integration-tests</id>
+      <activation>
+        <property>
+          <name>!trebol.runIntegrationTests</name>
+        </property>
+      </activation>
+      <properties>
+        <trebol.excludedTest.webpay>**/webpayplus/WebpayplusPaymentServiceImplTest*</trebol.excludedTest.webpay>
+        <trebol.excludedTest.mailgun>**/mailgun/MailgunMailingServiceImplTest*</trebol.excludedTest.mailgun>
+      </properties>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>
@@ -202,6 +252,20 @@
               <version>${lombok.version}</version>
             </path>
           </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <!-- Skip tests for integrations disabled in this POC (Webpay payments, Mailgun email).
+           The Webpay tests call Transbank's real sandbox over the internet, so they fail behind a proxy or offline.
+           Run them anyway with: mvn test -Dtrebol.runIntegrationTests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>${trebol.excludedTest.webpay}</exclude>
+            <exclude>${trebol.excludedTest.mailgun}</exclude>
+          </excludes>
         </configuration>
       </plugin>
 
