@@ -19,6 +19,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project     = var.project
+      Owner       = var.owner
       Environment = "poc"
       ManagedBy   = "terraform"
       Stack       = "bootstrap"

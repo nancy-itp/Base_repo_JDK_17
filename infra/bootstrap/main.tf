@@ -10,6 +10,10 @@ resource "aws_s3_bucket" "tfstate" {
 
   # Safety net: Terraform refuses to delete the bucket while it holds state.
   force_destroy = false
+
+  tags = {
+    Name = local.bucket_name # Name tag required by the cloud team
+  }
 }
 
 resource "aws_s3_bucket_ownership_controls" "tfstate" {

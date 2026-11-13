@@ -15,3 +15,9 @@ variable "noncurrent_version_days" {
   type        = number
   default     = 30
 }
+
+variable "owner" {
+  description = "Owner tag required by the cloud team (name or email)."
+  type        = string
+  default     = "nancy.vaghela"
+}
