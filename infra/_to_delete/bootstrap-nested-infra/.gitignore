@@ -1,0 +1,15 @@
+# Terraform working files and state (state lives in S3; bootstrap state stays local)
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfplan
+tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+# Keep .terraform.lock.hcl committed (pins provider versions)
