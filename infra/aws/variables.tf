@@ -49,3 +49,15 @@ variable "single_nat_gateway" {
   type        = bool
   default     = true
 }
+
+variable "ecr_keep_images" {
+  description = "How many images ECR keeps; older ones are deleted automatically."
+  type        = number
+  default     = 10
+}
+
+variable "ecr_force_delete" {
+  description = "Allow Terraform to delete the ECR repository even if it holds images (final teardown only)."
+  type        = bool
+  default     = false
+}

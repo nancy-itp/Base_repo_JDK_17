@@ -26,3 +26,8 @@ output "nat_gateway_public_ips" {
 output "lab_status" {
   value = var.lab_on ? "ON - hourly-billed resources are running" : "OFF - only free/near-free resources exist"
 }
+
+output "ecr_repository_url" {
+  description = "Push images here: <url>:<tag>"
+  value       = aws_ecr_repository.app.repository_url
+}

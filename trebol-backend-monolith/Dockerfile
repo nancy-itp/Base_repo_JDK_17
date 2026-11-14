@@ -41,6 +41,10 @@ FROM build-${APP_SOURCE} AS build
 ############################
 FROM eclipse-temurin:17-jre-alpine
 
+# Pull the latest Alpine security fixes on every build, so OS packages (e.g. zlib,
+# CVE-2026-4738 found by the ECR scan) don't wait for a new base-image release
+RUN apk upgrade --no-cache
+
 # Unprivileged user: if the app is ever compromised, it has no root rights in the container
 RUN addgroup -S trebol && adduser -S -G trebol -H -s /sbin/nologin trebol
 
