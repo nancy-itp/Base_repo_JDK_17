@@ -31,3 +31,13 @@ output "ecr_repository_url" {
   description = "Push images here: <url>:<tag>"
   value       = aws_ecr_repository.app.repository_url
 }
+
+output "db_secret_arn" {
+  description = "Secrets Manager ARN of the DB credentials (values are not printed)"
+  value       = aws_secretsmanager_secret.db.arn
+}
+
+output "jwt_secret_arn" {
+  description = "Secrets Manager ARN of the JWT signing key (value is not printed)"
+  value       = aws_secretsmanager_secret.jwt.arn
+}

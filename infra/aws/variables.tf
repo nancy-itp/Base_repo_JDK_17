@@ -61,3 +61,15 @@ variable "ecr_force_delete" {
   type        = bool
   default     = false
 }
+
+variable "db_username" {
+  description = "MariaDB master user name."
+  type        = string
+  default     = "trebol_admin"
+}
+
+variable "db_name" {
+  description = "Database (schema) the app uses; Flyway creates the tables in it."
+  type        = string
+  default     = "trebol"
+}
