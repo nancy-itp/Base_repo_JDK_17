@@ -41,3 +41,12 @@ output "jwt_secret_arn" {
   description = "Secrets Manager ARN of the JWT signing key (value is not printed)"
   value       = aws_secretsmanager_secret.jwt.arn
 }
+
+output "security_group_ids" {
+  value = {
+    alb   = aws_security_group.alb.id
+    app   = aws_security_group.app.id
+    proxy = aws_security_group.proxy.id
+    db    = aws_security_group.db.id
+  }
+}
