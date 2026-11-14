@@ -17,7 +17,14 @@ variable "noncurrent_version_days" {
 }
 
 variable "owner" {
-  description = "Owner tag required by the cloud team (name or email)."
+  description = <<-EOT
+    Owner tag on every resource. The organization's tag policy requires the owner's email address.
+    Set it in owner.auto.tfvars (git-ignored, loaded automatically; see owner.auto.tfvars.example).
+  EOT
   type        = string
-  default     = "nancy.vaghela"
+
+  validation {
+    condition     = can(regex("^[^@ ]+@[^@ ]+$", var.owner))
+    error_message = "owner must be an email address (required by the organization's tag policy)."
+  }
 }

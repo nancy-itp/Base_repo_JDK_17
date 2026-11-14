@@ -50,3 +50,8 @@ output "security_group_ids" {
     db    = aws_security_group.db.id
   }
 }
+
+output "db_proxy_endpoint" {
+  description = "What the app uses as DB_HOST (lab on only)"
+  value       = local.db_count == 1 ? aws_db_proxy.main[0].endpoint : "no database (lab off or db_enabled = false)"
+}

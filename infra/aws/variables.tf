@@ -5,9 +5,16 @@ variable "project" {
 }
 
 variable "owner" {
-  description = "Owner tag on every resource"
+  description = <<-EOT
+    Owner tag on every resource. The organization's tag policy requires the owner's email address.
+    Set it in owner.auto.tfvars (git-ignored, loaded automatically; see owner.auto.tfvars.example).
+  EOT
   type        = string
-  default     = "nancy.vaghela"
+
+  validation {
+    condition     = can(regex("^[^@ ]+@[^@ ]+$", var.owner))
+    error_message = "owner must be an email address (required by the organization's tag policy)."
+  }
 }
 
 variable "region" {
@@ -72,4 +79,39 @@ variable "db_name" {
   description = "Database (schema) the app uses; Flyway creates the tables in it."
   type        = string
   default     = "trebol"
+}
+
+variable "db_engine_version" {
+  description = "MariaDB version on RDS (matches docker-compose: mariadb:10.11)."
+  type        = string
+  default     = "10.11"
+}
+
+variable "db_instance_class" {
+  description = "DB size. Practice: db.t4g.micro. Load test and demo: db.t4g.small."
+  type        = string
+  default     = "db.t4g.micro"
+}
+
+variable "db_multi_az" {
+  description = "false = one zone (practice). true = standby copy in the second zone (load test and demo)."
+  type        = bool
+  default     = false
+}
+
+variable "db_allocated_storage" {
+  description = "Database storage in GB (gp3)."
+  type        = number
+  default     = 20
+}
+
+variable "db_enabled" {
+  description = <<-EOT
+    Create RDS MariaDB + RDS Proxy when the lab is on (true = normal).
+    Set false to run the lab without a database (the app then needs its H2 profile).
+    Note: RDS creation was denied while the Owner tag was not the owner's email address;
+    it worked once the tag policy value was used.
+  EOT
+  type        = bool
+  default     = true
 }

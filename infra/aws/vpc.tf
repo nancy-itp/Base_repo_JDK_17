@@ -103,15 +103,17 @@ resource "aws_route_table" "app" {
   count  = var.az_count
   vpc_id = aws_vpc.main.id
 
-  # Internet route only exists while the lab is on (and therefore a NAT gateway exists)
-  dynamic "route" {
-    for_each = var.lab_on ? [1] : []
-    content {
-      cidr_block     = "0.0.0.0/0"
-      nat_gateway_id = aws_nat_gateway.main[var.single_nat_gateway ? 0 : count.index].id
-    }
-  }
+  # The internet route is a separate aws_route below: an inline route block that
+  # disappears is NOT removed from AWS by Terraform, which left a dead route behind.
   tags = { Name = "${var.project}-app-rt-${local.azs[count.index]}" }
+}
+
+# Internet route for the app subnets, only while the lab is on (and therefore a NAT gateway exists)
+resource "aws_route" "app_nat" {
+  count                  = local.nat_count > 0 ? var.az_count : 0
+  route_table_id         = aws_route_table.app[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.main[var.single_nat_gateway ? 0 : count.index].id
 }
 
 resource "aws_route_table_association" "app" {
