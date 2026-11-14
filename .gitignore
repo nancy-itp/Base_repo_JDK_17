@@ -1,1 +1,4 @@
 *.log
+
+# Local copies of files delivered by Claude (not part of the repo)
+Claude outputs/
