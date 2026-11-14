@@ -88,9 +88,12 @@ variable "db_engine_version" {
 }
 
 variable "db_instance_class" {
-  description = "DB size. Practice: db.t4g.micro. Load test and demo: db.t4g.small."
+  description = <<-EOT
+    DB size. The organization's SCP allows creating db.t3.micro (db.t4g.micro was denied on create).
+    Ask the cloud team before using a bigger class for the load test.
+  EOT
   type        = string
-  default     = "db.t4g.micro"
+  default     = "db.t3.micro"
 }
 
 variable "db_multi_az" {
@@ -106,12 +109,49 @@ variable "db_allocated_storage" {
 }
 
 variable "db_enabled" {
-  description = <<-EOT
-    Create RDS MariaDB + RDS Proxy when the lab is on (true = normal).
-    Set false to run the lab without a database (the app then needs its H2 profile).
-    Note: RDS creation was denied while the Owner tag was not the owner's email address;
-    it worked once the tag policy value was used.
-  EOT
+  description = "Create RDS MariaDB + RDS Proxy when the lab is on. false = app runs on its built-in H2 database."
   type        = bool
   default     = true
+}
+
+variable "app_image_tag" {
+  description = "Image tag in ECR to run (git short SHA). Clean scan: 3a33ddf."
+  type        = string
+  default     = "3a33ddf"
+}
+
+variable "app_cpu" {
+  description = "Fargate task CPU units (512 = 0.5 vCPU)."
+  type        = number
+  default     = 512
+}
+
+variable "app_memory" {
+  description = "Fargate task memory in MiB."
+  type        = number
+  default     = 1024
+}
+
+variable "app_desired_count" {
+  description = "Number of app tasks (2 = one per zone)."
+  type        = number
+  default     = 2
+}
+
+variable "app_db_pool_size" {
+  description = "Hikari connections per task (RDS Proxy pools them further)."
+  type        = number
+  default     = 10
+}
+
+variable "cors_allowed_origins" {
+  description = "Browser origins allowed by CORS (only matters for a web front end; none in scope)."
+  type        = string
+  default     = "http://localhost:4200"
+}
+
+variable "log_retention_days" {
+  description = "How long CloudWatch keeps app logs."
+  type        = number
+  default     = 7
 }

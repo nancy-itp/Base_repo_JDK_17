@@ -1,8 +1,9 @@
 # Step 5: database (RDS for MariaDB) and connection pooling (RDS Proxy).
 #
 # Lab only: the DB instance and the proxy exist only while lab_on = true.
-#   Practice (default):   db.t4g.micro, Single-AZ        ~ $0.016/h + storage
-#   Load test and demo:   db.t4g.small, Multi-AZ         ~ $0.064/h + storage x2
+#   Practice (default):   db.t3.micro, Single-AZ         ~ $0.017/h + storage
+#   Load test and demo:   Multi-AZ (bigger class only if the cloud team allows it)
+#   (The organization's SCP denies creating db.t4g.* ; db.t3.micro is allowed.)
 #   RDS Proxy:            billed per vCPU of the DB, minimum 2 vCPU  ~ $0.030/h
 # Nothing is kept when the lab goes off (no final snapshot, no backups): Flyway
 # recreates the schema and demo data when the app starts in the next session.

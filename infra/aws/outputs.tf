@@ -55,3 +55,12 @@ output "db_proxy_endpoint" {
   description = "What the app uses as DB_HOST (lab on only)"
   value       = local.db_count == 1 ? aws_db_proxy.main[0].endpoint : "no database (lab off or db_enabled = false)"
 }
+
+output "alb_dns_name" {
+  description = "Internal ALB address (reachable only inside the VPC / via CloudFront)"
+  value       = var.lab_on ? aws_lb.app[0].dns_name : "lab off - no load balancer"
+}
+
+output "ecs_cluster" {
+  value = aws_ecs_cluster.main.name
+}
